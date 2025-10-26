@@ -3,6 +3,12 @@
  * Plugin Name: NOWPayments for FluentCart
  * Description: Accept 300+ cryptocurrencies in FluentCart via NOWPayments.
  * Version: 1.0.0
+ * Author: NOWPayments / FluentCart integration
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: nowpayments-for-fluent-cart
+ * Domain Path: /languages
+ * Requires Plugin: fluent-cart
  */
 
 if (!defined('ABSPATH')) {
@@ -14,14 +20,23 @@ if (!function_exists('is_plugin_active')) {
     include_once(ABSPATH . 'wp-admin/includes/plugin.php');
 }
 
+// Load plugin textdomain for translations
+add_action('init', function () {
+    load_plugin_textdomain('nowpayments-for-fluent-cart', false, dirname(plugin_basename(__FILE__)) . '/languages');
+});
+
 // Check if FluentCart is active before loading anything
 if (!is_plugin_active('fluent-cart/fluent-cart.php') && !class_exists('FluentCart\App\App')) {
     // Add admin notice if we're in admin area
     add_action('admin_notices', function() {
-        echo '<div class="notice notice-error"><p>';
-        echo '<strong>NOWPayments for FluentCart:</strong> This plugin requires FluentCart to be installed and activated.';
-        echo '</p></div>';
+    // translators: %1$s: plugin name
+    $plugin_name = __( 'NOWPayments for FluentCart', 'nowpayments-for-fluent-cart' );
+    // translators: %1$s: plugin name
+    $message = sprintf( __( '%1$s: This plugin requires FluentCart to be installed and activated.', 'nowpayments-for-fluent-cart' ), $plugin_name );
+
+        echo '<div class="notice notice-error"><p>' . esc_html( $message ) . '</p></div>';
     });
+
     return;
 }
 
