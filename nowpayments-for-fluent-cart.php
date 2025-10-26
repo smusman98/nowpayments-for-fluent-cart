@@ -9,6 +9,22 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Include required WordPress functions if not already loaded
+if (!function_exists('is_plugin_active')) {
+    include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+}
+
+// Check if FluentCart is active before loading anything
+if (!is_plugin_active('fluent-cart/fluent-cart.php') && !class_exists('FluentCart\App\App')) {
+    // Add admin notice if we're in admin area
+    add_action('admin_notices', function() {
+        echo '<div class="notice notice-error"><p>';
+        echo '<strong>NOWPayments for FluentCart:</strong> This plugin requires FluentCart to be installed and activated.';
+        echo '</p></div>';
+    });
+    return;
+}
+
 // Autoload classes if available (PSR-4 not assumed here). We'll include files directly.
 require_once __DIR__ . '/includes/Gateway.php';
 require_once __DIR__ . '/includes/SettingsBase.php';
